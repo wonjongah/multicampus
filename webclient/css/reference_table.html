@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* table > tr > th */
+        /* table밑에 tbody있어서 안 된다.. */
+        table tr>th
+
+        /* table의 후손tr의 밑에 있는th */
+            {
+            color: red;
+        }
+        /* 중복된 경우 더 구체적으로 지정된 것이 된다 */
+        tr:hover
+
+        /* 마우스 갖다댄 것 */
+            {
+            color: white;
+            background: black;
+        }
+        /* 버튼 눌렸을 때 */
+        tr:active{
+            color:violet;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1">
+        <tr>
+            <th>이름</th>
+            <th>지역</th>
+        </tr>
+        <tr>
+            <td>윤인성</td>
+            <td>서울특별시 강서구 내발산동</td>
+        </tr>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,627 @@
+url도 너무 많아지면 분리해서 상위레벨에서 관리하도록 함 
+라우팅!
+어떤 url에서 담당하냐 
+앱별로 분리해서 관리하는 게 좋음
+
+settings.py 안에 ROOT_URLCONF!
+최상위 라우팅, 그리고 앱별로 분리할 거임
+
+bookmark 아래에 urls.py 만듦
+mysite의 urls.py에 있던 내용 가지고 옴
+거기에
+
+app_name = 'bookmark'  #해당 애플리케이션의 네임스페이스명
+
+추가
+
+수십개의 앱이 있으면 충돌함.. 디테일 인덱스 등
+네임충돌 발생하게 된다, 그걸 회피하는 전략이 접두어를 붙여주는 것
+네임스페이스명이라고 함! 접두어를 붙여가지고 유일하게 만들어줌
+
+path 부분앞이 app_name으로 대체되는 듯?
+
+    path('bookmark/', BookmarkLV.as_view(), name='index'),
+    path('bookmark/<int:pk>', BookmarkDV.as_view(), name='detail'),
+
+urlpatterns = [
+ path('', BookmarkLV.as_view(), name='index'),
+ path('<int:pk>/', BookmarkDV.as_view(), name='detail'),
+]
+
+
+mysite/urls.py
+
+from django.contrib import admin
+from django.urls import path, include
+urlpatterns = [
+ path('admin/', admin.site.urls),
+ path('bookmark/', include('bookmark.urls')),
+]
+
+수정
+
+ path('bookmark/', include('bookmark.urls')),
+앞의 bookmark/ + bookmark/urls의  ''
+앞의 bookmark/ + bookmark/urls의  '<int:pk>'
+그리고  path('admin/', admin.site.urls),
+
+이 세 개의 패스!
+
+
+bookmark_list.html
+
+<a href="{% url 'bookmark:detail' bookmark.id %}">{{bookmark}}</a>
+수정
+
+북마크라는 네임스페이스를 가진~ 디테일
+구분을 짓는 것
+app_name:경로이름
+
+bookmark_detail.html
+
+             <li>목록으로 돌아가기 : <a href="{%url 'bookmark:index'%}">목록</a></li>
+bookmark:index 
+북마크라는 네임스페이스를 가진 인덱스
+
+python manage.py startapp blog 터미널에 치고!!!!!!
+
+settings.py 들어가서
+
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'bookmark.apps.BookmarkConfig', # 추가
+    'blog.apps.BlogConfig', # 추가
+]
+앱 하나 더 추가
+
+blog/models.py에 들어가서 모델 정의
+
+from django.db import models
+from django.urls import reverse
+class Post(models.Model):
+      title = models.CharField(verbose_name='TITLE', max_length=50)
+      slug = models.SlugField('SLUG', unique=True, allow_unicode=True,
+      help_text='one word for title alias.')
+      description = models.CharField('DESCRIPTION', max_length=100,
+      blank=True, help_text='simple description text.')
+      content = models.TextField('CONTENT')
+      create_dt = models.DateTimeField('CREATE DATE', auto_now_add=True)
+      modify_dt = models.DateTimeField('MODIFY DATE', auto_now=True)
+      # auto_now, 수정될 때 자동으로 나우를 넣겠다
+
+      class Meta:  # 클래스 안 클래스
+         verbose_name = 'post'
+         verbose_name_plural = 'posts'
+         db_table = 'blog_posts' # 테이블명 재정의
+         ordering = ('-modify_dt',) # orderby 절, -이면 내림차순
+
+
+메타는 컨텐츠를 추가설명하는 정보를 메타라고 한다
+컨텐츠 자체는 아니나 컨텐츠에 대해서 추가정보를 관리할 때 
+그 추가 정보를 메타정보라고 함
+ex) 파일의 경로, 생성일 등등
+이 자체는 컨텐츠가 아니나 컨텐츠를 관리하기 위해서 추가로 또 관리하는 정보를 메타정도
+html의 태그도 어떻게 보면 메타!
+
+      class Meta:
+         verbose_name = 'post'
+	#출력할 때 사용하는 명칭
+         verbose_name_plural = 'posts'
+         db_table = 'blog_posts' # 테이블명 재정의, 디폴트가 아니라 내가 정하겠다
+	#이 절 없으면 blog_blogs 이렇게 될 것이다
+         ordering = ('-modify_dt',) # orderby 절, -이면 내림차순
+	#정렬할 디폴트값을 줌, 튜플 (,)
+	#내림차순이면 앞에 -, 오름이면 그냥 이름만
+
+
+
+ <a href="{% url 'bookmark:detail' bookmark.id %}">
+이거 타이핑하기 귀찮다.. 메서드 만들자
+
+ reverse('blog:post_detail', args=(self.slug,))
+그게 이 리버스라는 함수!!!!
+○ reverse('앱명칭:url명' [, args=(경로변수…)])
+ 템플릿의 {% url %}과 같은 동작
+
+날짜파트 있는 모델에 한해서 
+
+ def get_previous(self): # 이전 데이터 추출
+ return self.get_previous_by_modify_dt()
+ def get_next(self): # 다음 데이터 추출
+ return self.get_next_by_modify_dt()
+
+내 앞에 있는 녀석, 뒤에 있는 녀석
+예를 들어 이전글 다음글
+
+슬러그????????????????????????????????
+동작하는 이유는 
+     prepopulated_fields = { 'slug' : ('title', )}
+확장시키는!! 슬러그가 대상이고 타이틀을 확장해나갈 것이다
+타이틀도 튜플, 타이틀 컬럼을 대상으로 확장해나가겠다
+타이틀을 값으로 슬러그의 기본값을 채워주는 것
+슬러그는 공백 안 된다 - 들어감
+
+데이터베이스반영
+$ python manage.py makemigrations blog
+$ python manage.py migrate
+
+URLConf : mysite/urls.py
+from django.contrib import admin
+from django.urls import path, include
+urlpatterns = [
+ path('admin/', admin.site.urls),
+ path('bookmark/', include('bookmark.urls')),
+ path('blog/', include('blog.urls')),  # 추가!!!!!
+]
+
+
+URLConf : blog/urls.py (목록보기)
+from django.urls import path, re_path
+from blog.views import *
+app_name = 'blog'
+urlpatterns = [
+ path('', PostLV.as_view(), name='index'),
+]
+
+블로그의 views.py
+
+from django.shortcuts import render
+
+from django.views.generic import ListView, DetailView
+from blog.models import Post
+
+# ListView
+class PostLV(ListView):
+ model = Post
+ template_name = 'blog/post_all.html' # 템플릿 파일명 변경
+ # 앱이름_list.html이 디폴트인데 이름 바꾸겠다
+
+ context_object_name = 'posts' # 컨텍스트 객체 이름 변경(object_list)
+ 
+ # 가독성을 좋게 하기 위해 오브젝츠 리스트를 포스츠로 바꿀 것이다
+ 
+ paginate_by = 2 # 페이지네이션, 페이지당 문서 건 수
+ # 한 페이지 당 보여줄 데이터 건수
+
+# DetailView
+class PostDV(DetailView):
+ model = Post
+
+페이지네이션 객체 page_obj
+○ 컨텍스트 변수로 자동 추가됨
+○ page_obj.has_previous : 이전 페이지 존재 여부
+○ page_obj.has_next : 이후 페이지 존재 여부
+○ page_obj.previous_page_number : 이전 페이지 번호
+○ page_obj.next_page_number : 다음 페이지 번호
+○ page_obj.number : 현재 페이지 번호
+○ page_obj.paginator.num_pages : 전체 페이지 수
+
+ blog/templates/blog/post_all.html
+만들기!!!!!!!!
+
+
+<h1>Blog List</h1>
+<br>
+{%for post in posts%}
+ <h3><a href="{{post.get_absolute_url}}">{{post.title}}</a></h3>
+ {{post.modify_dt|date:"N d, Y"}}
+<!--|는 필터를 쓰겠다, 가공하겠다!!-->
+<!--date 필터! post.modify_dt데이터를 date에 줘서 필터링하겠다!-->
+<!--월(문자열로 EX) 7월 8월) 일, 년-->
+ <p>{{post.description}}</p>
+{% endfor %}
+<!--위는 제목-->
+<br>
+<div>
+ <span>
+ {% if page_obj.has_previous %}
+ <a href="?page={{page_obj.previous_page_number}}">Prev</a>
+<!--  "?page={{page_obj.previous_page_number}}"-->
+<!--  /blog/?page=페이지번호를 넣겠다~-->
+ {% endif %}
+ Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages}}
+<!--     page_obj.number : 현재 페이지 번호-->
+<!--     page_obj.paginator.num_pages : 전체 페이지 수-->
+ {% if page_obj.has_next %}
+ <a href="?page={{page_obj.next_page_number}}">Next</a>
+ {% endif %}
+ </span>
+</div>
+
+
+blog/urls.py 들어가서
+
+urlpatterns = [
+ path('', PostLV.as_view(), name='index'),
+ re_path(r'^(?P<slug>[-\w]+)/$', PostDV.as_view(), name='detail'),
+]
+
+# re -> 정규표현식, 문자를 표현하는
+# r'^(?P<slug>[-\w]+)/$' => r하고 나옴
+# regular expression
+# ^이걸로 시작해서 $이걸로 끝난다
+# (안의 .은) 글자 하나, 글자 0개 이상 나온다
+# ex)  ^h(.)*s$  => has hs htttts attx는 틀림
+# P<slug> 꺾세 경로변수, 슬러그라는 이름의 경로변수를 지정
+# w는 워드, 알파벳과 숫자
+# +이런 것들이 한 개 이상 나온다
+# 즉!!!!! 공백없이 글자, 숫자, -로만 허용한다!!!!!! 그리고 마지막에 /로 끝나야 한다!!!!!
+# 그걸 슬러그로 받겠다
+
+blog/templates/blog/post_detail.html 만들기!!!!!!!!!!
+
+<h2>{{object.title}}</h2>
+<p>
+ {%if object.get_previous %}
+ <a href="{{object.get_previous.get_absolute_url}}"
+ title="이전 글">prev</a>
+ {%endif%}
+ {%if object.get_next %}
+ <a href="{{object.get_next.get_absolute_url}}"
+ title="다음 글">next</a>
+ {%endif%}
+</p>
+<p>{{object.modify_dt | date:"j F Y"}}</p>
+<br>
+<div>
+{{object.content | linebreaks}}
+<!--    <br>있어야 진짜 html상에서 줄 바뀜-->
+<!--엔터 있는 부분에 개행문자 넣어주는 필터, linebreaks!!!-->
+<!--    p태그로?-->
+</div>
+
+
+
+models.py 들어가서 풀어주기
+
+     def get_absolute_url(self): # 현재 데이터의 절대 경로 추출
+          return reverse('blog:detail', args=(self.slug,))
+
+(r'^(?P<slug>[-\w]+)/$', PostDV.as_view(), name='detail') 여기의 슬러그를 받음
+
+
+http://127.0.0.1:8000/blog/%EC%82%BC%EC%84%B1-%EC%A4%91%EA%B5%AD-pc-%EA%B3%B5%EC%9E%A5-%EB%B2%A0%ED%8A%B8%EB%82%A8%EC%9C%BC%EB%A1%9C%EB%AF%B8%EC%A4%91-%EA%B0%88%EB%93%B1-%EC%98%81%ED%96%A5-%EB%AF%B8%EC%B3%A4%EB%82%98/
+
+1바이트 당 16진수 2 개 필요~
+한글은 3바이트
+저 글자 세 개가 한글 한 글자... ex) %EC
+이렇게 인코딩된 것을 URL 인코딩이라고 부른다~~~~~~~~~~~~~~~~~~
+
+중요!!!!!!!!!!!!!!!! url 라우팅 만드는 방법!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!********************************
+앱별로 urls 파일 만들고 마이사이트 인클루드해서 앱 당 하나씩 만들기*******************************************
+슬러그!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 메타!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 리버스!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+메타 뭐 클래스 이런 거 이름 바꿀 때 씀.. 디폴트 바꿀 때
+
+
+----------------------날짜별로 취합, 아카이브뷰(모으겠다~)-------------------------------
+
+ArchiveView
+○ 날짜 필드로 필터링
+○ 년도별/월별/일별/오늘 목록 얻을 때 사용
+ ArchiveIndexView <model>_archive.html
+ YearArchiveView <model>_archive_year.html
+ MonthArchiveView <model>_archive_month.html
+ DayArchiveView <model>_archive_day.html
+ TodayArchiveView <model>_archive_day.html
+○ model, date_field 필드 정의 필요
+
+아카이브인덱스는 기간
+년도
+월기준
+데이 특정 날짜 모으기
+투데이 오늘 날짜~~~~
+
+데이랑 투데이 비슷함~ 하나는 오늘 하나는 특정 날짜
+
+파일명이 정해져 있음 <model>_archive~.html
+
+필수 요소가 모델과 데이터필드라는 멤버가 필수임
+어떤 것을 기준으로 할 거냐를 지정을 해줌
+
+blog/views.py 들어가서!!!!!
+
+
+from django.views.generic import ListView, DetailView
+from django.views.generic.dates import ArchiveIndexView, YearArchiveView, MonthArchiveView, DayArchiveView, TodayArchiveView
+:
+# ArchiveView
+class PostAV(ArchiveIndexView):
+ model= Post
+ date_field = 'modify_dt'
+
+class PostYAV(YearArchiveView):
+ model= Post
+ date_field = 'modify_dt'
+ make_object_list = True  => 목록도 가지겠다~~~
+아 난 월에대한 값만 필요하면 False
+
+class PostMAV(MonthArchiveView):
+ model= Post
+ date_field = 'modify_dt'
+ month_format = '%m'  => 숫자로 된 월을 해석하겠다 포맷~~
+
+class PostDAV(DayArchiveView):
+ model= Post
+ date_field = 'modify_dt'
+ month_format = '%m'
+
+class PostTAV(TodayArchiveView):
+ model= Post
+ date_field = 'modify_dt'
+ month_format = '%m'
+
+
+blog/urls.py 들어가기
+
+# Example: /blog/archive/
+ path('archive/', PostAV.as_view(), name='post_archive'),
+ # Example: /blog/archive/2019/
+ path('archive/<int:year>/', PostYAV.as_view(),
+      name='post_year_archive'),
+ # Example: /blog/archive/2019/nov/
+ path('archive/<int:year>/<str:month>/', PostMAV.as_view(),
+      name='post_month_archive'),
+ # Example: /blog/archive/2019/nov/10/
+ path('archive/<int:year>/<str:month>/<int:day>/', PostDAV.as_view(),
+      name='post_day_archive'),
+ # Example: /blog/archive/today/
+ path('archive/today/', PostTAV.as_view(), name='post_today_archive'),
+
+유알엘 패턴에 넣기~~~~~~~~~~~~~~~~~~
+
+blog/templates/blog/post_archive.html 들어가서~~~~~~~~
+
+<h1>Post Archives until {% now "b d, Y" %}</h1>
+<ul>  # 우리는 오늘 10개 만들어서 년도로 치면 하나!!
+ {% for date in date_list %}
+ <li style="display: inline;">
+ <a href="{% url 'blog:post_year_archive' date|date:'Y' %}">
+<!--     |앞은  {% for date in date_list %} 이 데이트, 뒤는 포맷 데이트-->
+<!--     post_year_archive는 blog\urls.py 들어가면 네임으로 있음-->
+ Year-{{ date|date:"Y" }}</a></li>
+ {% endfor %}
+</ul>
+<br/>
+<div>
+ <ul>
+ {% for post in object_list %}
+<!--     지금까지 입력한 포스트 여기에 다 담겨있음-->
+ <li>{{ post.modify_dt|date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+ <a href="{{ post.get_absolute_url }}">
+ <strong>{{ post.title }}</strong></a></li>
+ {% endfor %}
+ </ul>
+</div>
+
+만들기~~~~~~~~~~~~~~~~~~
+
+blog/templates/blog/post_archive_year.html 들어가서
+
+<h1>Post Archives for {{ year|date:"Y" }}</h1>
+<ul>
+ {% for date in date_list %}
+<!--    date에 월이!-->
+ <li style="display: inline;">
+ <a href="{% url 'blog:post_month_archive' year|date:'Y' date|date:'m' %}">{{ date|date:"F" }}</a></li>
+<!--    F는 월에대한 영문 풀네임-->
+ {% endfor %}
+</ul>
+<br>
+<div>
+ <ul>
+ {% for post in object_list %}
+ <li>{{ post.modify_dt|date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+ <a href="{{ post.get_absolute_url }}">
+ <strong>{{ post.title }}</strong></a></li>
+ {% endfor %}
+ </ul>
+</div>
+
+만들기
+
+blog/templates/blog/post_archive_month.html
+
+<h1>Post Archives for {{ month|date:"N, Y" }}</h1>
+<div>
+ <ul>
+ {% for post in object_list %}
+ <li>{{ post.modify_dt|date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+ <a href="{{ post.get_absolute_url }}">
+ <strong>{{ post.title }}</strong></a></li>
+ {% endfor %}
+ </ul>
+</div>
+
+만들기
+
+blog/templates/blog/post_archive_day.html 들어가서
+
+<h1>Post Archives for {{ day|date:"N d, Y" }}</h1>
+<div>
+ <ul>
+ {% for post in object_list %}
+ <li>{{ post.modify_dt|date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+ <a href="{{ post.get_absolute_url }}">
+ <strong>{{ post.title }}</strong></a></li>
+ {% endfor %}
+ </ul>
+</div>
+
+만들기~!!!!!
+
+post_archive_day.html
+pdf에서 23 보면 투데이랑 데이랑 같은 html 공유하고 있음
+
+
+뷰와 html!
+모델명_~.html
+관례가 모델명을 소문자로 바꿔서 _list, detail, archive.html 이렇게~~~!!!!!!!
+관례이나 만일 바꾸고 싶다고 하면 template_name을 바꿔서 연결하면 된다!
+
+
+----------------홈페이지 첫 페이지 만들기-----------------------------
+
+하나 만들고 상속받아서 쓰겠다 왜????? 코드중복 오오이!!!!
+헤더, 메뉴, 내용, 풋터 특히!!!!
+
+/ 이것도 하나의 앱으로 간주할 거임?
+선택의 문제~
+
+여러 앱을 모아둔 개념
+
+
+mysite는 루트느낌? 공통으로 사용됨
+홈 첫 페이지 그러니까 여기다가 정의하는 게 좋을 것 같다
+
+
+mysite/views.py 만들기!!!
+
+from django.views.generic import TemplateView
+
+# 순수하게 html 템플릿만 운영할 수 있도록 도와주는
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+만들기!!!!!!
+
+적절한 곳 없어서 우리가 만들 거임
+
+mysite/settings.py 들어ㅏ가!!!
+
+
+TEMPLATES = [
+ {
+ 'BACKEND': 'django.template.backends.django.DjangoTemplates',
+ 'DIRS': [
+ os.path.join(BASE_DIR, 'templates') #프로젝트 디렉토리 밑에 템플릿
+# 장고가 실행할 때 DIRS 처음으로 조회 찾기!!!!
+ ],
+ 'APP_DIRS': True,
+ 'OPTIONS': { … },
+ },
+]
+
+mysite/urls.py 들어가서
+
+from django.contrib import admin
+from django.urls import path, include
+from mysite.views import HomeView
+urlpatterns = [
+ path('', HomeView.as_view(), name='home'),
+ path('admin/', admin.site.urls),
+ path('bookmark/', include('bookmark.urls')),
+ path('blog/', include('blog.urls')),
+]
+
+
+from 임포트해주고 맨 위에 path 넣어주기!!!!!!!
+
+프로젝트, 즉 웹어플에 templates 디렉토리 만들어주고 menu.html 만들기!!!
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+ <span class="navbar-brand mx-5 mb-0 font-weight-bold font-italic">
+ Django - Python Web Programming</span>
+ <button class="navbar-toggler" type="button" data-toggle="collapse"
+ data-target="#navbarSupportedContent">
+ <span class="navbar-toggler-icon"></span>
+ </button>
+ <div class="collapse navbar-collapse" id="navbarSupportedContent">
+ <ul class="navbar-nav mr-auto">
+ <li class="nav-item mx-1 btn btn-primary">
+ <a class="nav-link text-white" href="{% url 'home' %}">Home</a></li>
+ <li class="nav-item mx-1 btn btn-primary">
+ <a class="nav-link text-white"
+ href="{% url 'bookmark:index' %}">Bookmark</a></li>
+ <li class="nav-item mx-1 btn btn-primary">
+ <a class="nav-link text-white"
+ href="{% url 'blog:index' %}">Blog</a></li>
+ <li class="nav-item mx-1 btn btn-primary">
+ <a class="nav-link text-white" href="">Photo</a></li>
+      <li class="nav-item dropdown mx-1 btn btn-primary">
+ <a class="nav-link dropdown-toggle text-white" href="#"
+ data-toggle="dropdown">Util</a>
+ <div class="dropdown-menu">
+ <a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a>
+ <div class="dropdown-divider"></div>
+ <a class="dropdown-item"
+ href="{% url 'blog:post_archive' %}">Archive</a>
+ <a class="dropdown-item" href="">Search</a>
+ </div>
+ </li>
+ </ul>
+ <form class="form-inline my-2" action="" method="post"> {% csrf_token %}
+ <input class="form-control mr-sm-2" type="search"
+ placeholder="global search" name="search_word">
+ </form>
+ </div>
+</nav>
+
+
+
+예쁘게 해주는 거!!!!!!!!!! ctrl + alt + shift + L
+
+
+templates/base.html 생성!!!!!!!!!
+
+{%load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Django Web Programming{% endblock %}</title>
+<!--    블럭을 하나 잡는다, 블럭의 명령, 블럭의 명칭 마지막 앤드블럭, 이 사이가 하나의 블럭이 되는 것-->
+<!--    이 블럭이 타이틀을 잡고 있음, 다른 곳에서 커스터마이징할 수 있음-->
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"/>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<!--    부트스크랩연결-->
+    {% block extra-style %}{% endblock %}
+</head>
+<body style="padding-top:90px;">
+{% include 'menu.html' %}
+<div class="container">
+    {% block content%}{% endblock %}
+</div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js">
+</script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js">
+</script>
+{% block extra-script %}{% endblock %}
+</html>
+
+입력!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+templates/home.html 새로 만들고 입력!!!!!!!!!!!
+
+{% extends "base.html" %}
+<!--내가 쓸 기본 레이아웃이 뭐냐?-->
+{% block title%}Home{% endblock %}
+<!--타이틀 블럭을 다시 정의하겠다!!!!-->
+<!--재정의를 안 하면 장고웹어쩌구를 쓸 거고 재정의하면 홈 쓰겠다-->
+{% block content%}
+<h1>홈 페이지</h1>
+<!--콘텐트 재정의하겠다~~~~-->
+{% endblock %}
+
+{% extends "base.html" %} 이걸 이용!!!!!!!! 사용하고 싶은 모양의 html을 여기다가 넣어서 사용
+
+어플에다가 
+
+{% extends "base2.html" %}
+{% block title %}post_archive_day.html{% endblock %}
+{% block content %}
+
+{% endblock %}
+
+다 입력해서 수정

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form>
+        <!-- search=입력한결과로 전달된다 -->
+        <!-- name은 파이썬의 변수 느낌 -->
+        <input type="text" name="search">
+        <input type="text" name="query">
+        <input type="submit" />
+        <!-- file:///C:/workspace/03_webclient/html/form.html?search=Hello&query=World -->
+    </form>
+    <br /> <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <form>
+        <!-- 사용자가 입력하는 입력 양식 -->
+        <input type="text" name="text" value="text" /><br />
+        <input type="password" name="password" value="password" /><br />
+        <input type="file" name="file" value="file" /><br />
+        <input type="checkbox" name="checkbox" value="checkbox" />축구<br />
+        <input type="checkbox" name="checkbox" value="checkbox" />야구<br />
+        <input type="checkbox" name="checkbox" value="checkbox" />배구<br />
+        <input type="radio" name="radio" value="radio" />포도<br />
+        <input type="radio" name="radio" value="radio" />사과<br />
+
+        <!-- 보이지 않는 입력 양식 -->
+        <input type="hidden" name="hidden" value="hidden" /><br />
+
+        <!-- 버튼 -->
+        <input type="button" value="button" /><br />
+        <input type="reset" value="reset" /><br />
+        <input type="submit" value="submit" /><br />
+        <input type="image" src="http://placehold.it/100x100" />
+
+    </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <!-- 라벨로 묶으면 그룹으로 묶임 -->
+    <form>
+        <table>
+            <tr>
+                <td><label for="username">이름</label></td>
+                <td><input id="username" type="text" name="username" /></td>
+            </tr>
+            <tr>
+                <td>성별</td>
+                <td>
+                    <input id="man" type="radio" name="gender" value="m" />
+                    <label for="man">남자</label>
+                    <input id="woman" type="radio" name="gender" value="w" />
+                    <label for="woman">여자</label>
+                    <!-- 동일한 네임을 가져야 동일 그룹 -->
+                    <input id="man" type="radio" name="sports" value="m" />
+                    <label for="man">축구</label>
+                    <input id="woman" type="radio" name="sports" value="w" />
+                    <label for="woman">야구</label>
+                </td>
+            </tr>
+        </table>
+        <input type="submit" value="가입" />
+    </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <form>
+        <!-- ul과 비슷한데 ul은 라디오 느낌, 셀렉트는 체크박스 느낌 -->
+        <select name="lunch" multiple="multiple">
+            <option value="1">김밥</option>
+            <option value="2" selected>떡볶이</option>
+            <!-- 아.. 옵션 맨 처음 거 말고 다른 게 디폴트로 처음 보이고 싶다 -> selected -->
+            <option value="3">순대</option>
+            <!-- 네임은 셀렉트에 붙지만 밸류는 옵션에 붙는다, 밸류는 넘어가는 값 -->
+        </select>
+        <br>
+        <input type="submit" value="확인">
+    </form>
+    <br />
+    <br />
+    <br />
+    <br />
+    <fieldset>
+        <legend>입력양식</legend>
+        <select>
+            <optgroup label="HTML5">
+                <option>multimedia tag</option>
+                <option>connectivity</option>
+                <option>device access</option>
+            </optgroup>
+            <optgroup label="CSS3">
+                <option>animation</option>
+                <option>3D transform</option>
+            </optgroup>
+        </select>
+        <br>
+        <select>
+            <optgroup label="HTML5">
+                <option>multimedia tag</option>
+                <option>connectivity</option>
+                <option>device access</option>
+            </optgroup>
+            <optgroup label="CSS3">
+                <option>animation</option>
+                <option>3D transform</option>
+            </optgroup>
+        </select>
+    </fieldset>
+    <br>
+    <br>
+    <form>
+        <textarea cols="80" rows="5">디폴트</textarea>
+    </form>
+</body>
+
+</html>

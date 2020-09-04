@@ -1,0 +1,5 @@
+print(None, bool(None))
+print(0, bool(0))
+print("", bool(""))
+print([], bool([]))
+print((), bool(()))

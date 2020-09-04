@@ -1,0 +1,32 @@
+{% extends "base3.html" %}
+{% block title %}post_archive.html{% endblock %}
+{% block content %}
+
+
+<h1>Post Archives until {% now "b d, Y" %}</h1>
+<ul>
+<!--      우리는 오늘 10개 만들어서 년도로 치면 하나!!-->
+ {% for date in date_list %}
+
+    <li style="display: inline;">
+        <a href="{% url 'blog:post_year_archive' date|date:'Y' %}">
+        <!--     |앞은  for date in date_list 이 데이트, 뒤는 포맷 데이트-->
+        <!--     post_year_archive는 blog\urls.py 들어가면 네임으로 있음-->
+        Year-{{ date|date:"Y" }}</a>
+    </li>
+ {% endfor %}
+</ul>
+<br/>
+<div>
+ <ul>
+ {% for post in object_list %}
+<!--     make_object_list = True  # 목록도 가지겠다 이것 때문에 가능??????-->
+<!--     지금까지 입력한 포스트 여기에 다 담겨있음-->
+ <li>{{ post.modify_dt|date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+ <a href="{{ post.get_absolute_url }}">
+ <strong>{{ post.title }}</strong></a></li>
+ {% endfor %}
+ </ul>
+</div>
+
+{% endblock %}

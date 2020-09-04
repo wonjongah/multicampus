@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .select {
+            color: red;
+        }
+
+        .summer {
+            background-color: blue;
+        }
+        /* select와 summer은 .이 붙어서 클래스 선택자, p는 태그 선택자 */
+        p.select.summer {
+            color: rgb(255, 255, 255)
+        }
+        li.select.summer{
+            color:turquoise
+        }
+
+        /* 셀렉트도 있고~ 써머도 있고~ 둘 다 가진 것 */
+        #ts.select{
+            
+        }
+        /* 아이디 ts를 가지고 select부여된 것 */
+    </style>
+</head>
+
+<body>
+    <ul>
+        <!-- 클래스 두 개 가지고 있는 것 -->
+        <li class="select summer">사과</li>
+        <li>바나나</li>
+        <li class="select">오렌지</li>
+        <li>감</li>
+    </ul>
+    <p class="select summer">p태그와 select와 summer</p>
+</body>
+
+</html>

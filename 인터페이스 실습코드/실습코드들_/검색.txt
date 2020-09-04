@@ -1,0 +1,91 @@
+ blog/forms.py 파일 만들기
+
+from django import forms
+class PostSearchForm(forms.Form):
+ search_word = forms.CharField(label='Search Word')
+
+만들기!!
+
+검색창엔 <input type = "text">
+
+
+blog/views/py 들어가서 수정
+
+from django.views.generic import FormView
+from django.db.models import Q
+from django.shortcuts import render
+from blog.forms import PostSearchForm
+
+
+#--- FormView
+class SearchFormView(FormView):
+ form_class = PostSearchForm
+ template_name = 'blog/post_search.html'
+ def form_valid(self, form):
+     searchWord = form.cleaned_data['search_word']
+     post_list = Post.objects.filter(
+     Q(title__icontains=searchWord) |
+     Q(description__icontains=searchWord) |
+     Q(content__icontains=searchWord)
+     ).distinct()
+     context = {}
+# 컨텍스트 변수 구성중~ 부모 이용하지 않고.. 비어있는 사전 만들고, 이름가지고 하나하나 넣음
+     context['form'] = form
+     context['search_term'] = searchWord
+     context['object_list'] = post_list
+     return render(self.request, self.template_name, context)
+
+
+blog/urls.py 들어가서
+
+ # Example: /blog/search/
+ path('search/', SearchFormView.as_view(), name='search'),
+추가
+
+menu.html 들어가서
+
+<a class="dropdown-item" href="{% url 'blog:search' %}">Search</a>
+주소추가
+
+templates/blog/post_search.html 만들기
+
+{% extends "base3.html" %}
+{% block title %}post_search.html{% endblock %}
+{% block content %}
+ <h1>Blog Search</h1>
+ <br>
+<!--# csrf_token은? 뭐냐, 다른 어떤 프로그램이 서브밋을 프로그램적으로 보낼 수 있음~-->
+<!--# 그런 것들을 차단하는 방법 중 하나가 서버가 토큰을 발급을 함, 리퀘스트 왔을 때-->
+<!--# 나한테 리퀘스트할 때는 토큰을 붙여서 보내-->
+<!--# 요청에 토큰 있으면 나에게 폼 요청해서~, 없으면 다른 쪽에 리퀘스트해서, 즉 나에게 리퀘스트 안 하고라는 뜻-->
+<!--# 폼을 보낼 땐 이 토큰을 꼭 포함해서 나에게 보내라~ 자격을 주는 느낌? 정보 안 털리려고-->
+<!--# 장고는 이 기능 디폴트로 지원함-->
+<!--# 토큰을 받아주는 역할을 함!!!! 밑에 csrf_token!!!!!!!!-->
+<!--# 이거 없으면 요청 다 무효처리된다~-->
+ <form action="." method="post"> {% csrf_token %}
+<!--     #submit 눌렀을 때 어떤 url로 보낼 거냐 액션-->
+<!--     # .은 워킹디렉토리-->
+ {{ form.as_table }}
+<!--     얘가 가지고 있는 형식을 테이블 형식으로 출력해라, 테이블이 자동으로 -->
+<!--     # 폼이라는 컨텍스트변수-->
+<!--     # views.py에서 context['form'] = form-->
+<!--     이건 forms.py의 변수-->
+ <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+ </form>
+ <br/><br/>
+ {% if object_list %}
+ {% for post in object_list %}
+ <h2><a href='{{ post.get_absolute_url }}'>{{ post.title }}</a></h2>
+ {{ post.modify_dt|date:"N d, Y" }}
+ <p>{{ post.description }}</p>
+ {% endfor %}
+ {% elif search_term %}
+ <b><i>Search Word({{ search_term }}) Not Found !</i></b>
+ {% endif %}
+{% endblock %}
+
+
+검색이 되면 오브젝트 리스트 만들어지고 루프 돌려줌~~~~~
+
+
+크리에이트, 업데이트하려면 폼을 써야 함!!!!

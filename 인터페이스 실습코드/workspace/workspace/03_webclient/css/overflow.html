@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* <link rel="stylesheet" href=".css"/> */
+        .box {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+        }
+
+        .box:nth-child(1) {
+            background-color: red;
+            left: 10px;
+            top: 10px;
+            z-index: 100;
+        }
+
+        .box:nth-child(2) {
+            background-color: green;
+            left: 50px;
+            top: 50px;
+            z-index: 10;
+        }
+
+        .box:nth-child(3) {
+            background-color: blue;
+            left: 90px;
+            top: 90px;
+            z-index: 1;
+        }
+
+        body>div {
+            width: 400px;
+            height: 100px;
+            border: 3px solid black;
+            position: relative;
+            /* overflow: hidden; */
+            /* overflow: scroll; */
+            /* 넘치는 것을 숨길 거냐, 스크롤할 거냐, 그냥 보여줄 거냐 */
+            overflow-y: scroll;
+            /* 위아래 방향으로 스크롤하겠다, x는 가로로 */
+            /* 근디 넘치든 말든 그냥 스크롤 생김.. 넘칠 때만 스크롤을 사용하고 싶을 때는 */
+            /* 오토를 쓰면 된다 */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>룰루랄랄라</h1>
+    <div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </div>
+    <h1>하하하하하하</h1>
+</body>
+
+</html>

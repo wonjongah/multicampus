@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        ul{overflow: hidden;}
+        /* overflow: hidden; -> ul 옆의 내용이 위로 올라올까봐 */
+        li{list-style: square;
+        /* 리스트 앞의 똥그라미 어떤 스타일로 할 거냐 */
+        float: left;padding: 15px;}
+        /* padding은 경계와 컨텐츠 사이의 ? */
+        /* float는 하나씩 떼서 붙이는 것, right하면 일곱여섯오사삼이일 이렇게 된다 */
+        li:first-child{border-radius: 10px 0 0 10px;}
+        li:last-child{border-radius: 0 10px 10px 0 ;}
+
+        li:nth-child(2n){background-color: rgb(0, 122, 71);}
+        li:nth-child(2n+1){background-color: greenyellow;}
+    </style>
+</head>
+<body>
+    <ul>
+        <li>첫</li>
+        <li>둘</li>
+        <li>셋</li>
+        <li>넷</li>
+        <li>다섯</li>
+        <li>여섯</li>
+        <li>일곱</li>
+    </ul>
+</body>
+</html>

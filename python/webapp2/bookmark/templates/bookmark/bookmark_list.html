@@ -1,0 +1,16 @@
+    <div>
+        <h1>Bookmark List</h1>
+            <ul>
+                {% for bookmark in object_list %}
+<!--                이건 html이 아니다~ {}-->
+<!--                object_list라는 변수-->
+<!--                all한 결과가 object_list에 담겨져 있어서 루프 몇 번 돌지 정함..-->
+<!--                5개 있음 뭐 5번 돌겠지-->
+                <li>
+                    <a href="{% url 'detail' bookmark.id %}">{{bookmark}}</a>
+<!--                    이걸 변수로 해서 이 값을 출력한다, print()와 같음-->
+
+                </li>
+                {% endfor %}
+            </ul>
+    </div>

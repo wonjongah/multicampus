@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #header {
+            background-color: red;
+            width: 800px;
+            margin: 0 auto;
+            /* 위1, 오2, 아래3, 왼4 */
+            /* (위아래)(왼오) */
+            
+        }
+
+        #wrap {
+            width: 800px;
+            margin: 0 auto;
+            background-color: midnightblue;
+            color: mintcream;
+            overflow: hidden;
+            padding: 12%;
+        }
+
+        #aside {
+            width: 200px;
+            background-color: palegreen;
+            float: left;
+        }
+
+        #content {
+            width: 600px;
+            background-color: coral;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <h1>#header 태그</h1>
+    </div>
+    <div id="wrap">
+        <div id="aside">
+            <h1>#aside 태그</h1>
+        </div>
+        <div id="content">
+            <!-- aside와 content는 wrap의 자식 -->
+            <h1>#content 태그</h1>
+        </div>
+        이것은 wrap아래다!!!!!!
+    </div>
+    이것은 wrap밖이다!!!!
+</body>
+
+</html>

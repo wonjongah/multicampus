@@ -1,0 +1,36 @@
+{% extends "base3.html" %}
+{% block title %}post_search.html{% endblock %}
+{% block content %}
+ <h1>Blog Search</h1>
+ <br>
+<!--# csrf_token은? 뭐냐, 다른 어떤 프로그램이 서브밋을 프로그램적으로 보낼 수 있음~-->
+<!--# 그런 것들을 차단하는 방법 중 하나가 서버가 토큰을 발급을 함, 리퀘스트 왔을 때-->
+<!--# 나한테 리퀘스트할 때는 토큰을 붙여서 보내-->
+<!--# 요청에 토큰 있으면 나에게 폼 요청해서~, 없으면 다른 쪽에 리퀘스트해서, 즉 나에게 리퀘스트 안 하고라는 뜻-->
+<!--# 폼을 보낼 땐 이 토큰을 꼭 포함해서 나에게 보내라~ 자격을 주는 느낌? 정보 안 털리려고-->
+<!--# 장고는 이 기능 디폴트로 지원함-->
+<!--# 토큰을 받아주는 역할을 함!!!! 밑에 csrf_token!!!!!!!!-->
+<!--# 이거 없으면 요청 다 무효처리된다~-->
+ <form action="." method="post"> {% csrf_token %}
+<!--     #submit 눌렀을 때 어떤 url로 보낼 거냐 액션-->
+<!--     # .은 워킹디렉토리-->
+ {{ form.as_table }}
+<!--     얘가 가지고 있는 형식을 테이블 형식으로 출력해라, 테이블이 자동으로 -->
+<!--     # 폼이라는 컨텍스트변수-->
+<!--     # views.py에서 context['form'] = form-->
+<!--     이건 forms.py의 변수-->
+ <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+ </form>
+ <br/><br/>
+ {% if object_list %}
+ {% for post in object_list %}
+ <h2><a href='{{ post.get_absolute_url }}'>{{ post.title }}</a></h2>
+ {{ post.modify_dt|date:"N d, Y" }}
+ <p>{{ post.description }}</p>
+ {% endfor %} {% elif search_term %}
+ <b><i>Search Word({{ search_term }}) Not Found !</i></b>
+ {% endif %}
+{% endblock %}
+
+
+

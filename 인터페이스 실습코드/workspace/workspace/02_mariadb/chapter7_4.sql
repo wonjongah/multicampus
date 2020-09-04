@@ -1,0 +1,32 @@
+
+ 
+USE tabledb;
+
+DROP TABLE if EXISTS buytbl, usertbl;
+
+CREATE TABLE usertbl
+(
+userID CHAR(8) NOT NULL PRIMARY KEY,
+NAME VARCHAR(10) not NULL,
+birthYear INT NOT NULL
+);
+
+CREATE table buytbl
+(
+num INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+userID CHAR(8) NOT NULL,
+prodName CHAR(6) NOT NULL,
+FOREIGN KEY(userID) REFERENCES usertbl(userID)
+);
+
+DROP TABLE IF EXISTS buytbl;
+
+
+CREATE TABLE buyTBL
+( num INT AUTO_INCREMENT NOT NULL PRIMARY KEY ,
+ userID CHAR(8) NOT NULL,
+ prodName CHAR(6) NOT NULL,
+ CONSTRAINT FK_userTBL_buyTBL FOREIGN KEY(userID) REFERENCES userTBL(userID) ON UPDATE cascade
+);
+
+DROP TABLE usertbl;  -- fail foreign 키 때문에!!

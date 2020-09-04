@@ -1,0 +1,7 @@
+USE tabledb;
+
+ALTER TABLE usertbl
+DROP PRIMARY KEY;
+
+ALTER TABLE buytbl
+DROP FOREIGN KEY FK_userTBL_buyTBL;

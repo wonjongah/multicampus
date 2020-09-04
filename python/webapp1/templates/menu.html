@@ -1,0 +1,67 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="margin-top:16%;margin-bottom:6%; ">
+ <span class="navbar-brand mx-5 mb-0 font-weight-bold font-italic"
+       style="font-size:3.2em;color:#FAECC5;text-shadow: 2px 2px 0px #191919;">
+ Sunrise</span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item mx-1 btn">
+                <a class="nav-link" style="font-size:2em;text-shadow: 2px 2px 0px #191919;color:#FAECC5;"
+                   href="{% url 'home' %}">Home</a></li>
+            <li class="nav-item mx-1 btn">
+                <a class="nav-link"
+                   href="{% url 'bookmark:index' %}"
+                   style="font-size:2em;text-shadow: 2px 2px 0px #191919;color:#FAECC5;">Bookmark</a></li>
+            <li class="nav-item mx-1 btn">
+                <a class="nav-link"
+                   href="{% url 'blog:index' %}" style="font-size:2em;text-shadow: 2px 2px 0px #191919;color:#FAECC5;">Blog</a>
+            </li>
+            <li class="nav-item mx-1 btn">
+                <a class="nav-link" style="font-size:2em;text-shadow: 2px 2px 0px #191919;color:#FAECC5;" href="#">Photo</a></li>
+            <li class="nav-item dropdown mx-1 btn">
+                <a class="nav-link dropdown-toggle" href="#"
+                   style="color:#FAECC5;font-size:2em;text-shadow: 2px 2px 0px #191919;color:#FAECC5;" data-toggle="dropdown">Util</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'admin:index' %}"
+                       style="font-size:2em;display: block;">Admin</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" style="font-size:2em;"
+                       href="{% url 'blog:post_archive' %}">Archive</a>
+                    <a class="dropdown-item" href="{% url 'blog:search' %}" style="font-size:2em;">Search</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2" action="" method="post"> {% csrf_token %}
+            <input class="form-control mr-sm-2" type="search" placeholder="global search" name="search_word">
+        </form>
+        </form>
+        <ul class="navbar-nav ml-5 mr-5">
+            <li class="nav-item dropdown mx-1 btn btn-primary">
+                {% if user.is_active %}
+                <a class="nav-link dropdown-toggle text-white" href="#"
+                   data-toggle="dropdown">
+                    <i class="fas fa-user"></i>
+                    {{user.username }} </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                    <a class="dropdown-item" href="{% url 'password_change' %}">
+                        Change Password</a>
+                </div>
+                {% else %}
+                <a class="nav-link dropdown-toggle text-white" href="#"
+                   data-toggle="dropdown">
+                    <i class="fas fa-user"></i>Anonymous</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+                    <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                </div>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+</nav>
+</div>
+</nav>

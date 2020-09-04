@@ -1,0 +1,11 @@
+{% extends "base3.html" %}
+{% block title %}bookmark_list.html{% endblock %}
+{% block content %}
+<h1>Bookmark List</h1>
+<br>
+<ul class="card pt-2" style="">
+    {% for bookmark in object_list %}
+    <li><a href="{% url 'bookmark:detail' bookmark.id %}">{{ bookmark }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

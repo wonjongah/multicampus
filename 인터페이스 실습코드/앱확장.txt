@@ -1,0 +1,168 @@
+pip install django-taggit django-taggit-templatetags2
+
+
+세팅스 들어가서 !!!!
+
+인스톨드앱에 추가
+'taggit.app.TaggitAppConfig',
+    'taggit_templatetags2',
+
+밑에 추가
+TAGGIT_CASE_INSENSITIVE = True  # 대소문자
+TAGGIT_LIMIT = 50  # 개수제한
+
+
+blog/models.py 들어가서
+
+from taggit.managers import TaggableManager # 추가
+
+class Post(models.Model):
+      title = models.CharField(verbose_name='TITLE', max_length=50)
+      slug = models.SlugField('SLUG', unique=True, allow_unicode=True,
+      help_text='one word for title alias.')
+      description = models.CharField('DESCRIPTION', max_length=100,
+      blank=True, help_text='simple description text.')
+      content = models.TextField('CONTENT')
+      create_dt = models.DateTimeField('CREATE DATE', auto_now_add=True)
+      modify_dt = models.DateTimeField('MODIFY DATE', auto_now=True)
+      # auto_now, 수정될 때 자동으로 나우를 넣겠다
+      tags = TaggableManager(black=True) # 추가!!!!!!! 널허용
+
+
+$ python manage.py makemigrations blog
+$ python manage.py migrate
+데베에 모델 반영하기!!!!!!!!
+
+
+blog/migrations/0002_post_tags.py 들어가봐라~ 한번
+
+db도 들어가보면 taggit_tag, taggit_taggeditem 생김
+
+
+포스트와 태그의 관계는 몇 대 몇인가아아아
+N:N
+엔대엔은 중개테이블 있어야 함
+taggit_taggeditem -> 포스트하고 관계 테이블!
+
+
+
+blog/admin.py 들어가서
+
+    list_display = ('id', 'title', 'modify_dt', 'tag_list') 추가
+
+def get_queryset(self, request):
+     return super().get_queryset(request).prefetch_related('tags')
+
+def tag_list(self, obj):
+     return ', '.join(o.name for o in obj.tags.all())
+
+추가
+
+
+Post.objects.all()의 리턴타입이 쿼리셋
+
+def get_queryset(self, request):
+     return super().get_queryset(request).prefetch_related('tags')
+포스트에 대한 셀렉트한 결과, 겟커리셋의 리턴값
+
+prefetch_related('tags')
+태그 불러오는 작업
+
+
+ list_display = ('id', 'title', 'modify_dt', 'tag_list') 여기의 태그리스트와
+def tag_list(self, obj):
+     return ', '.join(o.name for o in obj.tags.all())
+이 태그리스트 이름 같음
+
+', '.join -> 콤마로 묶어서 조인하겠다
+(o.name for o in obj.tags.all()) 컴프리헨션
+태그만 나열하겠다
+
+blog/views.py 들어가서
+
+from django.views.generic import ListView, DetailView, TemplateView
+마지막 추가
+
+# --- Tag View
+ class TagCloudTV(TemplateView):
+  template_name = 'taggit/taggit_cloud.html'
+
+ class TaggedObjectLV(ListView):
+  template_name = 'taggit/taggit_post_list.html'
+  model = Post
+
+  def get_queryset(self):
+   return Post.objects.filter(tags__name=self.kwargs.get('tag'))
+
+  def get_context_data(self, **kwargs):
+   context = super().get_context_data(**kwargs)
+   context['tagname'] = self.kwargs['tag']
+   return context
+
+추가
+
+태그가 TaggedObjectLV로 전달받음!
+
+filter(tags__name=self.kwargs.get('tag'))
+필터로 전부 다 받은 태그를 where절로 필터링하겠다~
+
+tags__name=self.kwargs.get('tag')
+태그스네임이랑 쿼리파라미터가 같은 것만
+url 상의 오른쪽에 나오는 것 ?tag=xxx이 쿼리파라미터값으로 검사를 하겠다~
+
+
+ListView의 역할은 object_list만들어냄
+object_list에 담기는 것은 get_queryset의 리턴값
+디폴트값은 Post.objects.all() 우린 이걸 써왔음
+objects_list를 컨텍스츠 사전에 넣어야 하는데 그 역할을 get_context_data가 함!
+get_context_data는 사전을 리턴해서 렌더의 세 번째 인수인 키에 넘겨줌
+
+   context = super().get_context_data(**kwargs)
+부모 누구? 리스트뷰~
+
+이제 나는 하나 더 집어넣겠다~ tag=xxx를 컨텍스트 변수에 넣겠다, 태그명이 뭔지 컨텍스트변수로 넣겠다는 것
+
+ context = super().get_context_data(**kwargs) => 사전
+   context['tagname'] = self.kwargs['tag'] 추가추가
+사전의 키가 컨텍스트 변수의 이름으로 쓰임
+그러면 결국 return context => 사전의 키의 값일 것
+
+*args => 가변인수임, 튜플로 받음
+**kwargs => 사전, 가변인수
+
+
+blog/urls.py
+
+ # Example: /blog/tag/
+ path('tag/', TagCloudTV.as_view(), name='tag_cloud'),
+ # Example: /blog/tag/tagname/
+ path('tag/<str:tag>/', TaggedObjectLV.as_view(), name='tagged_object_list'),
+
+맨밑, tag/내가 찾고자 하는 태그~
+<str:tag> => tags__name=self.kwargs.get('tag')
+
+
+blog/templates/blog/post_detail.html 들어가서!!!
+
+
+<div>
+ <b>TAGS</b> <i class="fas fa-tag"></i>
+ {% load taggit_templatetags2_tags %}  # 패키지 설치한 것에서~ 하나는 모델에서 하나는 템플릿에서
+ {% get_tags_for_object object as "tags" %}
+ {% for tag in tags %} # tags 어디서..?
+ <a href="{% url 'blog:tagged_object_list' tag.name %}">{{tag.name}}</a>
+ {% endfor %}
+ &emsp;<a href="{% url 'blog:tag_cloud' %}">
+ <span class="btn btn-info btn-sm">TagCloud</span> </a>
+ </div>
+
+django-taggit => 모델에서 태그
+django-taggit-templatetags2 => 템플릿에서 지원
+
+. 클래스 선택자!!!!!!!!!!!!!!!!!!!!!!!!!!
+# 아이디 선택자!!!!!!!!!!!!!!!!!!!!!!!!
+a>b 자손!!!!!!!!!!선택자!!!!!!!!!!!
+a b 후손 선택자!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+blog/views.py에서 get_context_data!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 중요!!!!!!!!!!!!!!!!!!!

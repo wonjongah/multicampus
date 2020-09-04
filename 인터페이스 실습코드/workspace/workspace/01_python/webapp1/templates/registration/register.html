@@ -1,0 +1,43 @@
+{% extends "base3.html"%}
+{% load widget_tweaks %}
+<!--# 이걸 해줘야 라벨 필터 쓸 수 있음-->
+{% block title %}register.html{% endblock %}
+{% block content %}
+<h1>New User Registration</h1>
+<p class="font-italic">Please enter your username and password twice.</p>
+{% if form.errors %}
+<div class="alert alert-danger">
+    <div class="font-weight-bold">
+        Wrong! Please correct the error(s) below.
+    </div>
+    {{ form.errors }}
+</div>
+{% endif %}
+<form action="." method="post" class="card pt-3">{% csrf_token %}
+    <div class="form-group row">
+        {{ form.username| add_label_class:"col-form-label col-sm-3 ml-3 font-weight-bold" }}
+<!--        #내가 쓸 라벨의 클래스 지정-->
+        <div class="col-sm-5">
+            {{ form.username|add_class:"form-control"|attr:"autofocus" }}
+<!--            # 여러개의 파이프, 클래스 추가하고, 오토포커스를 넣음(화면 보여질 때 입력활성화가 되는 거)-->
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.password1| add_label_class:"col-form-label col-sm-3 ml-3 font-weight-bold" }}
+        <div class="col-sm-5">
+            {{ form.password1|add_class:"form-control" }}
+        </div>
+    </div>
+    <div class="form-group row">
+        {{ form.password2|add_label_class:"col-form-label col-sm-3 ml-3 font-weight-bold" }}
+        <div class="col-sm-5">
+            {{ form.password2|add_class:"form-control" }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="offset-sm-3 col-sm-5">
+            <input type="submit" value="Register" class="btn btn-info"/>
+        </div>
+    </div>
+</form>
+{% endblock %}

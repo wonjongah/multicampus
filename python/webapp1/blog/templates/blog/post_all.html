@@ -1,0 +1,36 @@
+{% extends "base3.html" %}
+{% block title %}post_all.html{% endblock %}
+{% block content %}
+
+<h1>Blog List</h1>
+<br>
+<ul class="card">
+{%for post in posts%}
+ <h1><a href="{{post.get_absolute_url}}">{{post.title}}</a></h1>
+<!--def get_absolute_url(self): # 현재 데이터의 절대 경로 추출-->
+ {{post.modify_dt|date:"N d, Y"}}
+<!--|는 필터를 쓰겠다, 가공하겠다!!-->
+<!--date 필터! post.modify_dt데이터를 date에 줘서 필터링하겠다!-->
+<!--월(문자열로 EX) 7월 8월) 일, 년-->
+ <p>{{post.description}}</p>
+{% endfor %}
+<!--위는 제목-->
+<br>
+<div>
+</ul>
+ <span>
+ {% if page_obj.has_previous %}
+ <a href="?page={{page_obj.previous_page_number}}">Prev</a>
+<!--  "?page={{page_obj.previous_page_number}}"-->
+<!--  /blog/?page=페이지번호를 넣겠다~-->
+ {% endif %}
+ Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages}}
+<!--     page_obj.number : 현재 페이지 번호-->
+<!--     page_obj.paginator.num_pages : 전체 페이지 수-->
+ {% if page_obj.has_next %}
+ <a href="?page={{page_obj.next_page_number}}">Next</a>
+ {% endif %}
+ </span>
+</div>
+
+{% endblock %}

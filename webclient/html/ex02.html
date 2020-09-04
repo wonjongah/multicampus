@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>종아의 두 번째 다큐먼트</title>
+    <style> 
+        /* 주석 ctrl + slash */
+        /* 내부 css (주로 공부할 때) */
+        h1{
+            color:rgb(75, 255, 195);  /* 폰트 색상 */
+            background:rgb(165, 165, 165);
+        }
+        h2{
+            color: rgb(151, 113, 255);
+            background-color: rgb(148, 148, 148);
+        }
+        h3{
+            color: rgb(255, 238, 161);
+            background-color: rgb(116, 116, 116);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body id="top">
+    <!-- 주석주석 -->
+    
+    <h1>제일 큰 안뇽</h1>
+    <hr/>
+    <p>hr은 대표적 단일태그, 줄넣기</p>
+    <h2>두 번째로 큰 안뇽</h2>
+    <br/>
+    <p>br는 개행태그</p>
+    <h3>이건 세 번째로 큰 안뇽</h3>
+    <!-- h랑 p는 끝나는 태그 만나면 자동으로 줄 바꾸어준다 -> 블럭스타일 -->
+    <h6>h6이 제일 작은 거당 진짜 작다</h6>
+    <p>haha   &lt;&copy;&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;       
+                ha</p>
+    <!-- 연속적인 공백은 한 개의 공백으로 반영! -->
+    <!-- &nbsp;를 사용하면 갯수만큼의 연속된 공백 반영 -->
+    <!-- &nbsp;는 공백, &lt;는 <, &gt는 >, &copy는 © -->
+    <!-- <p>태그 만나면 줄 바꿈 -->
+    <a href="http://naver.com/">네이버S2</a><br/>
+    <a href="http://daum.com/">다음</a><br/>
+    <!-- a는 줄바꾸지 않음.. br해줘야 함-->
+    <a href="ex01.html">ex01.html 파일!</a>
+    <a href="/sub/test02.html">sub 파일 아래 있는 test.02파일</a><br/>
+    <a href="sub/test02.html">sub 파일 아래 있는 test.02파일</a>
+    <!-- /가 앞에 있으면 절대경로...... 루트부터 -->
+    <!-- 오잉 근데 /써도 작동된다? 그럼 html의 루트는 어디?  -->
+    <!-- 웹서버의 루트는 설정하기 나름이다~ 가상의 루트, 워킹디렉토리가 현재 루트 -->
+
+
+    <!-- 아이디 부여해서 스크롤로 다음으로 이동하겠다!  -->
+    <a href="#alpha">Alpha 부분</a><br/>
+    <a href="#beta">Beta 부분</a><br/>
+    <a href="#gamma">Gamma 부분</a><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <hr/>
+    <h1 id="alpha">Alpha [<a href="#top">Top</a>>]</h1>
+    <p>...</p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 id="beta">Beta [<a href="#top">Top</a>]</h1>
+    <p>...</p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 id="gamma">Gamma [<a href="#top">Top</a>]</h1>
+    <p>...</p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+    <!-- 바디에다가 탑이라는 아이디 주고 링크로 하면 맨 위로 이동! -->
+
+</body>
+</html>

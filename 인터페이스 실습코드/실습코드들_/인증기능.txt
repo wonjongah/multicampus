@@ -1,0 +1,46 @@
+인증과 권한 배정
+누가 로그인을 했냐에 따라서 달라짐
+
+인증기능은 장고에 100퍼 구현~ 그러나 영어를 만나게 된다
+그중 일부를 커스터마이징을 해야 함
+
+세팅즈파이!!!!!
+'django.contrib.auth' 얘 쓸 것
+
+$ pip install django-widget-tweaks
+또는
+$ conda install django-widget-tweaks
+
+패키지 다운
+필터제공해줌
+
+서버가 이거 바뀌었어! 방향을 바꿨다 => 리다이렉션!!!  300번대 오류
+브라우저가 이걸 가지고 이 주소로 새롭게 주소를 요청함
+
+터미널 들어가서
+http -v GET http://google.co.kr
+어떻게 주고받나 알 수 있음
+처음 내가 리퀘스트한 것
+다음, 응답으로 받은 것
+
+잉 주소 바뀌었음, 리다이렉트~~~
+
+로그인 상태관리 컨텍스트 변수
+ user
+⁃ user.is_active :로그인 여부
+⁃ user.get_username : 사용자 계정명
+
+is_active => T or F
+로그인 했으면 티, 아니면 폴스
+
+모델의 필드들 다 얘가 가지고 있으면 된다고 생각!!
+사용자 계정명을 알고 싶으면 username 이걸로!!
+
+mysite/urls.py에 추가!!
+    path('accounts/', include('django.contrib.auth.urls')),
+
+ㅎ..pdf 보고 해라.. 힘들다
+
+password_reset 비밀번호 재정의할 때 
+
+<form action="." method="post" class="card pt-3">

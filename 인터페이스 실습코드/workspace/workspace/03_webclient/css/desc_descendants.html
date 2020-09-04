@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #header h1 {color:red;}
+        /* header id 아래 있는 h1을 의미!! */
+        /* 후손은 띄어쓰기로 구분 */
+        #header h1, h2{}
+        /* 헤더 아래의h1과 그냥 h2 */
+        #header h1, #header h2{}
+        /* 헤더 아래 h1, 헤더 아래 h2 */
+        #section h1 {color:orange}
+        
+        #header > h1{}
+        /* 바로!! 아래 있는 h1만 즉 네비게이터는 안 된다*/
+    </style>
+</head>
+<body>
+    <!-- 아래에 있기만 하면 후손이다! -->
+    <div id="header">
+        <h1 class="title">Lorem ipsum</h1>
+        <div id="nav">
+            <h1>Navigation</h1>
+            <!-- 얘도 헤더 아래임 후손임 -->
+        </div>
+    </div>
+    <div id= "section">
+        <h1 class="title">Lorem ipsum2</h1>
+        <p>룰루랄랄</p>
+    </div>
+
+</body>
+</html>
