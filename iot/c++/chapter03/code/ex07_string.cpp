@@ -7,7 +7,7 @@ int main(int argc, char const *argv[]) {
 
     cout << "name : ";
     cin >> s1;
-    // cin.ignore(); // 엔터키 제거
+     cin.ignore(); // 엔터키 제거
     // 주소는 공백이 들어가니 
 
     cout << "address : ";

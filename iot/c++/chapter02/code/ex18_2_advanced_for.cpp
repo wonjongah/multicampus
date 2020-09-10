@@ -25,9 +25,7 @@ int main(int argc, char const *argv[]) {
         cout << i << " ";
     }
 
-    cout << list <<endl;
-
-
+    
     return 0;
 
 }

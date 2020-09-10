@@ -20,7 +20,6 @@ int main(int argc, char const *argv[]) {
         cout << endl;
     }
 
-    cout << list <<endl;
 
     return 0;
 }
