@@ -7,5 +7,14 @@
 			"path": "..\\Users\\automata13\\Documents\\Arduino\\libraries"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"array": "cpp",
+			"vector": "cpp",
+			"xstring": "cpp",
+			"xutility": "cpp",
+			"string": "cpp",
+			"string_view": "cpp"
+		}
+	}
 }
