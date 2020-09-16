@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "..\\Users\\automata13\\Documents\\Arduino\\libraries"
+		},
+		{
+			"path": "iot\\arduino\\2. 버튼 센서"
 		}
 	],
 	"settings": {

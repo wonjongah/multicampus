@@ -8,7 +8,7 @@ void setup(){
     lcd.setCursor(3, 0);  // 커서 위치 설정 (x,y)
 
     // 문자열 출력
-    lcd.print("I LOVE YOU");
+    lcd.print("Hello, World!");
 }
 
 void loop(){
