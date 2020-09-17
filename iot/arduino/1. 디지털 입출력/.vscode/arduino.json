@@ -1,5 +1,5 @@
 {
-    "sketch": "..\\2. 버튼 센서\\button_ex04\\app.ino",
+    "sketch": "..\\2. 버튼 센서\\joystick_ex02_control\\app.ino",
     "board": "arduino:avr:uno",
     "port": "COM4"
 }

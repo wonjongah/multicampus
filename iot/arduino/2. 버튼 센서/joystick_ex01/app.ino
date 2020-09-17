@@ -4,8 +4,8 @@
 #include <AnalogSensor.h>
 #include <Button.h>
 
-AnalogSensor jX(A0, 0, 1023);
-AnalogSensor jY(A1, 0, 1023);
+AnalogSensor jX(A0, -100, 100);
+AnalogSensor jY(A1, -100, 100);
 Button btn(2);
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -18,7 +18,7 @@ void readJoystick(){
     int x = jX.read();
     int y = jY.read();
     int z = btn.read();
-    sprintf(buf, "x : %4d, y : %4d", x, y);
+    sprintf(buf, "x:%4d,y:%4d", x, y);
     lcd.setCursor(0,0);
     lcd.print(buf);
 
