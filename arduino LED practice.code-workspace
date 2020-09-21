@@ -17,7 +17,9 @@
 			"xstring": "cpp",
 			"xutility": "cpp",
 			"string": "cpp",
-			"string_view": "cpp"
+			"string_view": "cpp",
+			"ostream": "cpp",
+			"*.tcc": "cpp"
 		}
 	}
 }
