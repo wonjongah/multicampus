@@ -67,3 +67,4 @@ void loop(){
     com.run();
     pulse.run(); // false or true에 따라서 운영하거나 안 하거나
 }
+

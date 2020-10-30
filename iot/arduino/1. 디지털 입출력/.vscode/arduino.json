@@ -1,5 +1,6 @@
 {
-    "sketch": "..\\2. 버튼 센서\\pir\\app.ino",
-    "board": "arduino:avr:uno",
-    "port": "COM4"
+    "sketch": "..\\2. 버튼 센서\\bt_controller\\app.ino",
+    "board": "arduino:avr:pro",
+    "port": "COM3",
+    "configuration": "cpu=16MHzatmega328"
 }

@@ -1,0 +1,36 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.mywebbrowser.MainActivity">
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="action_home"
+        app:showAsAction="ifRoom" />
+    <item android:title="개발자정보">
+        <menu>
+            <item
+                android:id="@+id/action_send_text"
+                android:title="sms" />
+            <item
+                android:id="@+id/action_call"
+                android:title="call" />
+            <item
+                android:id="@+id/action_email"
+                android:title="email" />
+        </menu>
+    </item>
+    <item android:title="검색사이트" >
+        <menu >
+            <item
+                android:id="@+id/action_naver"
+                android:title="naver" />
+            <item
+                android:id="@+id/action_google"
+                android:title="google" />
+            <item
+                android:id="@+id/action_daum"
+                android:title="daum" />
+        </menu>
+    </item>
+</menu>
